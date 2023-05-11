@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//Crea un struct para fecha con los siguientes campos: dia, mes, anio.
+typedef struct{
+    int dia;
+    int mes;
+    int anio;
+}Fecha;
+
 //Crea una estructura que representa un titulo universitario con los siguientes campos: id, nombre, universidad, anio de obtencion.
 typedef struct{
     int id;

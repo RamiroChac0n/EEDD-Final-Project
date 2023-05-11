@@ -13,7 +13,7 @@ typedef struct{
     int id;
     char nombre[50];
     char universidad[50];
-    int anioObtencion;
+    Fecha anioObtencion;
 }Titulo;
 
 //Crea un arbol binario equilibrado de titulos universitarios.

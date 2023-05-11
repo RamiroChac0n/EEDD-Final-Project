@@ -78,6 +78,43 @@ void ordenarListaDocentes(Universidad *universidad){
     }
 }
 
+//Crea un método para ordenar de forma equilibrada el arbol de titulos de un docente.
+void ordenarArbolTitulos(Arbol_titulos *arbolTitulos){
+    Arbol_titulos *nodoActual = arbolTitulos;
+    Arbol_titulos *nodoSiguiente = nodoActual->derecha;
+    Arbol_titulos *nodoAnterior = NULL;
+    Arbol_titulos *nodoAuxiliar = NULL;
+    int flag = 1;
+    while(flag){
+        flag = 0;
+        while(nodoSiguiente != NULL){
+            if(nodoActual->titulo.id > nodoSiguiente->titulo.id){
+                flag = 1;
+                if(nodoAnterior == NULL){
+                    nodoActual->derecha = nodoSiguiente->derecha;
+                    nodoSiguiente->derecha = nodoActual;
+                    nodoAnterior = nodoSiguiente;
+                    nodoSiguiente = nodoActual->derecha;
+                    arbolTitulos = nodoSiguiente;
+                }else{
+                    nodoActual->derecha = nodoSiguiente->derecha;
+                    nodoSiguiente->derecha = nodoActual;
+                    nodoAnterior->derecha = nodoSiguiente;
+                    nodoAnterior = nodoSiguiente;
+                    nodoSiguiente = nodoActual->derecha;
+                }
+            }else{
+                nodoAnterior = nodoActual;
+                nodoActual = nodoSiguiente;
+                nodoSiguiente = nodoActual->derecha;
+            }
+        }
+        nodoAnterior = NULL;
+        nodoActual = arbolTitulos;
+        nodoSiguiente = nodoActual->derecha;
+    }
+}
+
 int main(){
     printf("Hello World!\n");
     return 0;

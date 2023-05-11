@@ -9,13 +9,14 @@ typedef struct{
     int anioObtencion;
 }Titulo;
 
-//Crea una estructura que representa un nodo de una lista enlazada de titulos universitarios.
-typedef struct nodo{
+//Crea un arbol binario equilibrado de titulos universitarios.
+typedef struct arbol_titulos{
     Titulo titulo;
-    struct nodo *siguiente;
-}Nodo;
+    struct arbol_titulos *izquierda;
+    struct arbol_titulos *derecha;
+}Arbol_titulos;
 
-//Crea una estructura que representa a un docente con los siguientes campos: id, nombre, apellido, edad, telefono, ciudad, lista de titulos universitarios.
+//Crea una estructura que representa a un docente con los siguientes campos: id, nombre, apellido, edad, telefono, ciudad, arbol de titulos universitarios.
 typedef struct{
     int id;
     char nombre[50];
@@ -23,22 +24,59 @@ typedef struct{
     int edad;
     char telefono[50];
     char ciudad[50];
-    Nodo *listaTitulos;
+    Arbol_titulos *arbolTitulos;
 }Docente;
 
 //Crea una estructura que representa un nodo de una lista enlazada de docentes.
-typedef struct nodoDocente{
+typedef struct nodo_docente{
     Docente docente;
-    struct nodoDocente *siguiente;
-}NodoDocente;
+    struct nodo_docente *siguiente;
+}Nodo_docente;
 
 //Crea una estructura que representa a una universidad con los siguientes campos: id, nombre, ciudad, lista de docentes.
 typedef struct{
     int id;
     char nombre[50];
     char ciudad[50];
-    NodoDocente *listaDocentes;
+    Nodo_docente *listaDocentes;
 }Universidad;
+
+//Crea un método para ordenar la lista de docentes de una universidad por id.
+void ordenarListaDocentes(Universidad *universidad){
+    Nodo_docente *nodoActual = universidad->listaDocentes;
+    Nodo_docente *nodoSiguiente = nodoActual->siguiente;
+    Nodo_docente *nodoAnterior = NULL;
+    Nodo_docente *nodoAuxiliar = NULL;
+    int flag = 1;
+    while(flag){
+        flag = 0;
+        while(nodoSiguiente != NULL){
+            if(nodoActual->docente.id > nodoSiguiente->docente.id){
+                flag = 1;
+                if(nodoAnterior == NULL){
+                    nodoActual->siguiente = nodoSiguiente->siguiente;
+                    nodoSiguiente->siguiente = nodoActual;
+                    nodoAnterior = nodoSiguiente;
+                    nodoSiguiente = nodoActual->siguiente;
+                    universidad->listaDocentes = nodoSiguiente;
+                }else{
+                    nodoActual->siguiente = nodoSiguiente->siguiente;
+                    nodoSiguiente->siguiente = nodoActual;
+                    nodoAnterior->siguiente = nodoSiguiente;
+                    nodoAnterior = nodoSiguiente;
+                    nodoSiguiente = nodoActual->siguiente;
+                }
+            }else{
+                nodoAnterior = nodoActual;
+                nodoActual = nodoSiguiente;
+                nodoSiguiente = nodoActual->siguiente;
+            }
+        }
+        nodoAnterior = NULL;
+        nodoActual = universidad->listaDocentes;
+        nodoSiguiente = nodoActual->siguiente;
+    }
+}
 
 int main(){
     printf("Hello World!\n");

@@ -48,43 +48,6 @@ typedef struct{
     Nodo_docente *listaDocentes;
 }Universidad;
 
-//Crea un método para ordenar la lista de docentes de una universidad por id.
-void ordenarListaDocentes(Universidad *universidad){
-    Nodo_docente *nodoActual = universidad->listaDocentes;
-    Nodo_docente *nodoSiguiente = nodoActual->siguiente;
-    Nodo_docente *nodoAnterior = NULL;
-    Nodo_docente *nodoAuxiliar = NULL;
-    int flag = 1;
-    while(flag){
-        flag = 0;
-        while(nodoSiguiente != NULL){
-            if(nodoActual->docente.id > nodoSiguiente->docente.id){
-                flag = 1;
-                if(nodoAnterior == NULL){
-                    nodoActual->siguiente = nodoSiguiente->siguiente;
-                    nodoSiguiente->siguiente = nodoActual;
-                    nodoAnterior = nodoSiguiente;
-                    nodoSiguiente = nodoActual->siguiente;
-                    universidad->listaDocentes = nodoSiguiente;
-                }else{
-                    nodoActual->siguiente = nodoSiguiente->siguiente;
-                    nodoSiguiente->siguiente = nodoActual;
-                    nodoAnterior->siguiente = nodoSiguiente;
-                    nodoAnterior = nodoSiguiente;
-                    nodoSiguiente = nodoActual->siguiente;
-                }
-            }else{
-                nodoAnterior = nodoActual;
-                nodoActual = nodoSiguiente;
-                nodoSiguiente = nodoActual->siguiente;
-            }
-        }
-        nodoAnterior = NULL;
-        nodoActual = universidad->listaDocentes;
-        nodoSiguiente = nodoActual->siguiente;
-    }
-}
-
 //Crea un método para ordenar de forma equilibrada el arbol de titulos de un docente.
 void ordenarArbolTitulos(Arbol_titulos *arbolTitulos){
     Arbol_titulos *nodoActual = arbolTitulos;
@@ -122,7 +85,128 @@ void ordenarArbolTitulos(Arbol_titulos *arbolTitulos){
     }
 }
 
+//Crea un método para buscar un docente segun id en una universidad y retornar el docente.
+Docente buscarDocente(Universidad *universidad){
+    int id;
+    printf("Ingrese el id del docente:\n");
+    scanf("%d", &id);
+    Nodo_docente *nodoActual = universidad->listaDocentes;
+    while(nodoActual != NULL){
+        if(nodoActual->docente.id == id){
+            printf("%p\n", nodoActual);
+            return nodoActual->docente;
+        }
+        nodoActual = nodoActual->siguiente;
+    }
+    printf("El id del docente no existe.\n");
+    printf("%p\n", nodoActual);
+}
+
+
+//Crea un método para agregar un docente en orden segun id en una universidad.
+void agregarDocente(Universidad *universidad){
+    Nodo_docente *nodoActual = universidad->listaDocentes;
+    Nodo_docente *nodoAnterior = NULL;
+    Nodo_docente *nodoNuevo = (Nodo_docente*)malloc(sizeof(Nodo_docente));
+    printf("Ingrese el id del docente:\n");
+    scanf("%d", &nodoNuevo->docente.id);
+    fflush(stdin);
+    printf("Ingrese el nombre del docente:\n");
+    fgets(nodoNuevo->docente.nombre, 50, stdin);
+    printf("Ingrese el apellido del docente:\n");
+    fgets(nodoNuevo->docente.apellido, 50, stdin);
+    printf("Ingrese la edad del docente:\n");
+    scanf("%d", &nodoNuevo->docente.edad);
+    fflush(stdin);
+    printf("Ingrese el telefono del docente:\n");
+    fgets(nodoNuevo->docente.telefono, 50, stdin);
+    printf("Ingrese la ciudad del docente:\n");
+    fgets(nodoNuevo->docente.ciudad, 50, stdin);
+    nodoNuevo->siguiente = NULL;
+    if(nodoActual == NULL){
+        universidad->listaDocentes = nodoNuevo;
+        return;
+    }
+    while(nodoActual != NULL){
+        if(nodoActual->docente.id > nodoNuevo->docente.id){
+            if(nodoAnterior == NULL){
+                nodoNuevo->siguiente = nodoActual;
+                universidad->listaDocentes = nodoNuevo;
+                return;
+            }else{
+                nodoNuevo->siguiente = nodoActual;
+                nodoAnterior->siguiente = nodoNuevo;
+                return;
+            }
+        }
+        nodoAnterior = nodoActual;
+        nodoActual = nodoActual->siguiente;
+    }
+    nodoAnterior->siguiente = nodoNuevo;
+}
+
+//Crea un método para eliminar un docente de una universidad segun un id.
+void eliminarDocente(Universidad *universidad){
+    int id;
+    printf("Ingrese el id del docente: ");
+    scanf("%d", &id);
+    Nodo_docente *nodoActual = universidad->listaDocentes;
+    Nodo_docente *nodoAnterior = NULL;
+    while(nodoActual != NULL){
+        if(nodoActual->docente.id == id){
+            if(nodoAnterior == NULL){
+                universidad->listaDocentes = nodoActual->siguiente;
+            }else{
+                nodoAnterior->siguiente = nodoActual->siguiente;
+            }
+            free(nodoActual);
+            printf("El docente se elimino correctamente.\n");
+            return;
+        }
+        nodoAnterior = nodoActual;
+        nodoActual = nodoActual->siguiente;
+    }
+    printf("El id del docente no existe.\n");
+}
+
+//Crea un metodo que imprima todos los docentes de una universidad.
+void mostrarDocentes(Universidad *universidad){
+    Nodo_docente *nodoActual = universidad->listaDocentes;
+    while(nodoActual != NULL){
+        printf("%d->", nodoActual->docente.id);
+        nodoActual = nodoActual->siguiente;
+    }
+}
+
 int main(){
-    printf("Hello World!\n");
+    //Haz un menú para agregar, eliminar, mostrar y ordenar docentes.
+    Universidad *universidad = (Universidad*)malloc(sizeof(Universidad));
+    universidad->listaDocentes = NULL;
+    int opcion;
+    do{
+        printf("\n1. Agregar docente.\n");
+        printf("2. Buscar docente\n");
+        printf("3. Mostrar docentes.\n");
+        printf("5. SALIR.\n");
+        printf("Ingrese una opcion:\n");
+        scanf("%d", &opcion);
+        switch(opcion){
+            case 1:
+                agregarDocente(universidad);
+                break;
+            case 2:
+                buscarDocente(universidad);
+                break;
+            case 3:
+                mostrarDocentes(universidad);
+                break;
+            case 5:
+                printf("Adios.\n");
+                break;
+            default:
+                printf("Opcion invalida.\n");
+                break;
+        };
+    }while(opcion != 5);
     return 0;
 }

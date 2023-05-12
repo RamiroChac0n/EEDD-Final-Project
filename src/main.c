@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //Crea un struct para fecha con los siguientes campos: dia, mes, anio.
 typedef struct{
@@ -178,14 +179,46 @@ void mostrarDocentes(Universidad *universidad){
         nodoActual = nodoActual->siguiente;
     }
 }
-//Crea un metodo que testeé agregar docentes.
 
+void docentesQuemados(Universidad *universidad){
+    //Docente 1
+    Nodo_docente *docente1 = (Nodo_docente*)malloc(sizeof(Nodo_docente));
+    docente1->docente.id = 5;
+    strcpy(docente1->docente.nombre, "Juan");
+    strcpy(docente1->docente.apellido, "Perez");
+    docente1->docente.edad = 30;
+    strcpy(docente1->docente.telefono, "123456");
+    strcpy(docente1->docente.ciudad, "Cochabamba");
+    //Docente 2
+    Nodo_docente *docente2 = (Nodo_docente*)malloc(sizeof(Nodo_docente));
+    docente2->docente.id = 10;
+    strcpy(docente2->docente.nombre, "Maria");
+    strcpy(docente2->docente.apellido, "Lopez");
+    docente2->docente.edad = 25;
+    strcpy(docente2->docente.telefono, "123456");
+    strcpy(docente2->docente.ciudad, "Cochabamba");
+    //Docente 3
+    Nodo_docente *docente3 = (Nodo_docente*)malloc(sizeof(Nodo_docente));
+    docente3->docente.id = 15;
+    strcpy(docente3->docente.nombre, "Pedro");
+    strcpy(docente3->docente.apellido, "Gomez");
+    docente3->docente.edad = 35;
+    strcpy(docente3->docente.telefono, "123456");
+    strcpy(docente3->docente.ciudad, "Cochabamba");
+    docente1->siguiente = docente2;
+    docente2->siguiente = docente3;
+    docente3->siguiente = NULL;
+    universidad->listaDocentes = docente1;
+}
 /* ******* TEST ******* */
 
 int main(){
     //Haz un menú para agregar, eliminar, mostrar y ordenar docentes.
     Universidad *universidad = (Universidad*)malloc(sizeof(Universidad));
     universidad->listaDocentes = NULL;
+
+    docentesQuemados(universidad);
+
     int opcion;
     do{
         printf("\n0. Mostrar docentes.\n");

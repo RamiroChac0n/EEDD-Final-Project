@@ -148,7 +148,7 @@ void agregarDocente(Universidad *universidad){
 //Crea un método para eliminar un docente de una universidad segun un id.
 void eliminarDocente(Universidad *universidad){
     int id;
-    printf("Ingrese el id del docente: ");
+    printf("Ingrese el id del docente:\n");
     scanf("%d", &id);
     Nodo_docente *nodoActual = universidad->listaDocentes;
     Nodo_docente *nodoAnterior = NULL;
@@ -169,6 +169,7 @@ void eliminarDocente(Universidad *universidad){
     printf("El id del docente no existe.\n");
 }
 
+/* ******* TEST ******* */
 //Crea un metodo que imprima todos los docentes de una universidad.
 void mostrarDocentes(Universidad *universidad){
     Nodo_docente *nodoActual = universidad->listaDocentes;
@@ -177,6 +178,9 @@ void mostrarDocentes(Universidad *universidad){
         nodoActual = nodoActual->siguiente;
     }
 }
+//Crea un metodo que testeé agregar docentes.
+
+/* ******* TEST ******* */
 
 int main(){
     //Haz un menú para agregar, eliminar, mostrar y ordenar docentes.
@@ -184,13 +188,17 @@ int main(){
     universidad->listaDocentes = NULL;
     int opcion;
     do{
-        printf("\n1. Agregar docente.\n");
+        printf("\n0. Mostrar docentes.\n");
+        printf("1. Agregar docente.\n");
         printf("2. Buscar docente\n");
-        printf("3. Mostrar docentes.\n");
+        printf("3. Eliminar docene.\n");
         printf("5. SALIR.\n");
         printf("Ingrese una opcion:\n");
         scanf("%d", &opcion);
         switch(opcion){
+            case 0:
+                mostrarDocentes(universidad);
+                break;
             case 1:
                 agregarDocente(universidad);
                 break;
@@ -198,7 +206,7 @@ int main(){
                 buscarDocente(universidad);
                 break;
             case 3:
-                mostrarDocentes(universidad);
+                eliminarDocente(universidad);
                 break;
             case 5:
                 printf("Adios.\n");

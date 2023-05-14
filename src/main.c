@@ -102,7 +102,17 @@ Docente buscarDocente(Universidad *universidad){
     printf("El id del docente no existe.\n");
     printf("%p\n", nodoActual);
 }
-
+//Crea un metodo que busca a un docente por id.
+Nodo_docente *buscarDocentePorId(Universidad *universidad, int id){
+    Nodo_docente *nodoActual = universidad->listaDocentes;
+    while(nodoActual != NULL){
+        if(nodoActual->docente.id == id){
+            return nodoActual;
+        }
+        nodoActual = nodoActual->siguiente;
+    }
+    return NULL;
+}
 
 //Crea un método para agregar un docente en orden segun id en una universidad.
 void agregarDocente(Universidad *universidad){
@@ -112,6 +122,10 @@ void agregarDocente(Universidad *universidad){
     printf("Ingrese el id del docente:\n");
     scanf("%d", &nodoNuevo->docente.id);
     fflush(stdin);
+    if(buscarDocentePorId(universidad, nodoNuevo->docente.id) != NULL){
+        printf("El id del docente ya existe.\n");
+        return;
+    }
     printf("Ingrese el nombre del docente:\n");
     fgets(nodoNuevo->docente.nombre, 50, stdin);
     printf("Ingrese el apellido del docente:\n");

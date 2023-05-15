@@ -17,9 +17,10 @@ typedef struct{
     Fecha anioObtencion;
 }Titulo;
 
-//Crea un arbol binario equilibrado de titulos universitarios.
-typedef struct arbol_titulos{
+//Crea un nodo de arbol binario de titulos universitarios.
+typedef struct nodo_titulos{
     Titulo titulo;
+    int altura;
     struct arbol_titulos *izquierda;
     struct arbol_titulos *derecha;
 }Arbol_titulos;
@@ -48,6 +49,28 @@ typedef struct{
     char ciudad[50];
     Nodo_docente *listaDocentes;
 }Universidad;
+
+//Crea un método que pide los datos de un titulo universitario y lo retorna.
+Titulo crearTitulo(){
+    Titulo titulo;
+    printf("Ingrese el id del titulo:\n");
+    scanf("%d", &titulo.id);
+    fflush(stdin);
+    printf("Ingrese el nombre del titulo:\n");
+    fgets(titulo.nombre, 50, stdin);
+    printf("Ingrese el nombre de la universidad:\n");
+    fgets(titulo.universidad, 50, stdin);
+    printf("Ingrese el dia de obtencion del titulo:\n");
+    scanf("%d", &titulo.anioObtencion.dia);
+    fflush(stdin);
+    printf("Ingrese el mes de obtencion del titulo:\n");
+    scanf("%d", &titulo.anioObtencion.mes);
+    fflush(stdin);
+    printf("Ingrese el anio de obtencion del titulo:\n");
+    scanf("%d", &titulo.anioObtencion.anio);
+    fflush(stdin);
+    return titulo;
+}
 
 //Imprime la informacion de un docente.
 void imprimirDocente(Docente docente){

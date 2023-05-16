@@ -306,7 +306,6 @@ void agregarDocente(Universidad *universidad){
     Nodo_docente *nodoNuevo = (Nodo_docente*)malloc(sizeof(Nodo_docente));
     printf("Ingrese el id del docente:\n");
     scanf("%d", &nodoNuevo->docente.id);
-    getchar();
     fflush(stdin);
     if(buscarDocentePorId(universidad, nodoNuevo->docente.id) != NULL){
         printf("El id del docente ya existe.\n");
@@ -314,20 +313,19 @@ void agregarDocente(Universidad *universidad){
     }
     printf("Ingrese el nombre del docente:\n");
     fgets(nodoNuevo->docente.nombre, 50, stdin);
-    getchar();
+    nodoNuevo->docente.nombre[strcspn(nodoNuevo->docente.nombre, "\n")] = '\0';
     printf("Ingrese el apellido del docente:\n");
     fgets(nodoNuevo->docente.apellido, 50, stdin);
-    getchar();
+    nodoNuevo->docente.apellido[strcspn(nodoNuevo->docente.apellido, "\n")] = '\0';
     printf("Ingrese la edad del docente:\n");
     scanf("%d", &nodoNuevo->docente.edad);
-    getchar();
     fflush(stdin);
     printf("Ingrese el telefono del docente:\n");
     fgets(nodoNuevo->docente.telefono, 50, stdin);
-    getchar();
+    nodoNuevo->docente.telefono[strcspn(nodoNuevo->docente.telefono, "\n")] = '\0';
     printf("Ingrese la ciudad del docente:\n");
     fgets(nodoNuevo->docente.ciudad, 50, stdin);
-    getchar();
+    nodoNuevo->docente.ciudad[strcspn(nodoNuevo->docente.ciudad, "\n")] = '\0';
     nodoNuevo->siguiente = NULL;
     if(nodoActual == NULL){
         universidad->listaDocentes = nodoNuevo;

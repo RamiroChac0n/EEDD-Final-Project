@@ -61,9 +61,12 @@ int altura(Nodo_titulos *nodo) {
     return nodo->altura;
 }
 
-Nodo_titulos* nuevoNodo(Nodo_titulos *nodo_padre, int id) {
+Nodo_titulos* nuevoNodo(Nodo_titulos *nodo_padre, int id, char nombre[50], char universidad[50], Fecha anioObtencion) {
     Nodo_titulos* nodo = (Nodo_titulos*)malloc(sizeof(Nodo_titulos));
     nodo->titulo.id = id;
+    strcpy(nodo->titulo.nombre, nombre);
+    strcpy(nodo->titulo.universidad, universidad);
+    nodo->titulo.anioObtencion = anioObtencion;
     nodo->izquierda = NULL;
     nodo->derecha = NULL;
     nodo->altura = 1;
@@ -102,14 +105,14 @@ int balance(Nodo_titulos *nodo) {
     return altura(nodo->izquierda) - altura(nodo->derecha);
 }
 
-Nodo_titulos* insertar_titulo(Nodo_titulos* nodo, int clave) {
+Nodo_titulos* insertar_titulo(Nodo_titulos* nodo, int clave, char nombre[50], char universidad[50], Fecha anioObtencion) {
     if (nodo == NULL)
-        return (nuevoNodo(nodo, clave)); //Crea un nuevo nodo si el arbol esta vacio.
+        return (nuevoNodo(nodo, clave, nombre, universidad, anioObtencion)); //Crea un nuevo nodo si el arbol esta vacio.
 
     if (clave < nodo->titulo.id)
-        nodo->izquierda = insertar_titulo(nodo->izquierda, clave);
+        nodo->izquierda = insertar_titulo(nodo->izquierda, clave, nombre, universidad, anioObtencion);
     else if (clave > nodo->titulo.id)
-        nodo->derecha = insertar_titulo(nodo->derecha, clave);
+        nodo->derecha = insertar_titulo(nodo->derecha, clave, nombre, universidad, anioObtencion);
     else
         return nodo;
 
@@ -137,26 +140,69 @@ Nodo_titulos* insertar_titulo(Nodo_titulos* nodo, int clave) {
 }
 /******************************************/
 
+//Busca un titulo en un arbol de titulos y retorna.
+Nodo_titulos* buscarTitulo(Nodo_titulos *nodo, int idTitulo){
+    if(nodo == NULL){
+        return NULL;
+    }
+    if(nodo->titulo.id == idTitulo){
+        return nodo;
+    }
+    if(idTitulo < nodo->titulo.id){
+        return buscarTitulo(nodo->izquierda, idTitulo);
+    }
+    return buscarTitulo(nodo->derecha, idTitulo);
+}
+
 //Crea un método para crear un titulo universitario y agregarlo al arbol de titulos de un docente de una universidad.
 void agregarTitulo(Universidad *Universidad){
     int idDocente, idTitulo;
     Nodo_docente *nodoDocente = Universidad->listaDocentes;
     Nodo_titulos *nodoTitulos;
-    printf("Ingrese el id del docente: ");
+    printf("Ingrese el id del docente:\n");
     scanf("%d", &idDocente);
+    fflush(stdin);
     while(nodoDocente != NULL){
         if(nodoDocente->docente.id == idDocente){
-            printf("Ingrese el id del titulo: ");
+            printf("Ingrese el id del titulo:\n");
             scanf("%d", &idTitulo);
-            nodoTitulos = insertar_titulo(nodoDocente->docente.arbolTitulos, idTitulo);
+            fflush(stdin);
+            // Verifica si el titulo ya existe.
+            if(buscarTitulo(nodoDocente->docente.arbolTitulos, idTitulo) != NULL){
+                printf("El titulo ya existe.\n");
+                return;
+            }
+            nodoTitulos = (Nodo_titulos*)malloc(sizeof(Nodo_titulos)); // Asignación de memoria
+            nodoTitulos->titulo.id = idTitulo; // Asigna el id del título
+
+            printf("Ingrese el nombre del titulo:\n");
+            fgets(nodoTitulos->titulo.nombre, 50, stdin);
+            nodoTitulos->titulo.nombre[strcspn(nodoTitulos->titulo.nombre, "\n")] = '\0'; // Elimina el carácter de nueva línea
+
+            printf("Ingrese el nombre de la universidad:\n");
+            fgets(nodoTitulos->titulo.universidad, 50, stdin);
+            nodoTitulos->titulo.universidad[strcspn(nodoTitulos->titulo.universidad, "\n")] = '\0'; // Elimina el carácter de nueva línea
+
+            printf("Ingrese el dia de obtencion:\n");
+            scanf("%d", &nodoTitulos->titulo.anioObtencion.dia);
+
+            printf("Ingrese el mes de obtencion:\n");
+            scanf("%d", &nodoTitulos->titulo.anioObtencion.mes);
+
+            printf("Ingrese el anio de obtencion:\n");
+            scanf("%d", &nodoTitulos->titulo.anioObtencion.anio);
+
+            nodoTitulos = insertar_titulo(nodoDocente->docente.arbolTitulos, idTitulo, nodoTitulos->titulo.nombre, nodoTitulos->titulo.universidad, nodoTitulos->titulo.anioObtencion);
             nodoDocente->docente.arbolTitulos = nodoTitulos;
             printf("Titulo agregado correctamente.\n");
             return;
+
         }
         nodoDocente = nodoDocente->siguiente;
     }
     printf("No se encontro el docente.\n");
 }
+
 
 //Método para mostrar la información de un titulo.
 void mostrarTitulo(Titulo titulo){
@@ -260,6 +306,7 @@ void agregarDocente(Universidad *universidad){
     Nodo_docente *nodoNuevo = (Nodo_docente*)malloc(sizeof(Nodo_docente));
     printf("Ingrese el id del docente:\n");
     scanf("%d", &nodoNuevo->docente.id);
+    getchar();
     fflush(stdin);
     if(buscarDocentePorId(universidad, nodoNuevo->docente.id) != NULL){
         printf("El id del docente ya existe.\n");
@@ -267,15 +314,20 @@ void agregarDocente(Universidad *universidad){
     }
     printf("Ingrese el nombre del docente:\n");
     fgets(nodoNuevo->docente.nombre, 50, stdin);
+    getchar();
     printf("Ingrese el apellido del docente:\n");
     fgets(nodoNuevo->docente.apellido, 50, stdin);
+    getchar();
     printf("Ingrese la edad del docente:\n");
     scanf("%d", &nodoNuevo->docente.edad);
+    getchar();
     fflush(stdin);
     printf("Ingrese el telefono del docente:\n");
     fgets(nodoNuevo->docente.telefono, 50, stdin);
+    getchar();
     printf("Ingrese la ciudad del docente:\n");
     fgets(nodoNuevo->docente.ciudad, 50, stdin);
+    getchar();
     nodoNuevo->siguiente = NULL;
     if(nodoActual == NULL){
         universidad->listaDocentes = nodoNuevo;
@@ -328,10 +380,12 @@ void eliminarDocente(Universidad *universidad){
 void mostrarDocentes(Universidad *universidad){
     Nodo_docente *nodoActual = universidad->listaDocentes;
     while(nodoActual != NULL){
-        printf("%d->", nodoActual->docente.id);
+        printf("%d", nodoActual->docente.id);
+        printf("->");
         nodoActual = nodoActual->siguiente;
     }
 }
+
 
 void docentesQuemados(Universidad *universidad){
     //Docente 1

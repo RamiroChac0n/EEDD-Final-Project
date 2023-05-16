@@ -525,6 +525,11 @@ int main(){
         printf("2. Buscar docente\n");
         printf("3. Eliminar docente.\n");
         printf("4. Agregar título.\n");
+        printf("5. Buscar título.\n");
+        printf("6. Eliminar título.\n");
+        printf("7. Imprimir lista de Docentes.\n");
+        printf("8. Imprimir arbol de títulos de un medico.\n");
+        printf("9. Imprimir los datos completos de cada titulo de un docente.\n");
         printf("10. SALIR.\n");
         printf("Ingrese una opcion:\n");
         scanf("%d", &opcion);
@@ -544,6 +549,16 @@ int main(){
             case 4:
                 agregarTitulo(universidad);
                 break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
             case 10:
                 printf("Adios.\n");
                 break;
@@ -551,6 +566,6 @@ int main(){
                 printf("Opcion invalida.\n");
                 break;
         };
-    }while(opcion != 5);
+    }while(opcion != 10);
     return 0;
 }

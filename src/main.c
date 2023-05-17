@@ -138,6 +138,73 @@ Nodo_titulos* insertar_titulo(Nodo_titulos* nodo, int clave, char nombre[50], ch
 
     return nodo;
 }
+
+Nodo_titulos* obtener_sucesor(Nodo_titulos* nodo) {
+    Nodo_titulos* actual = nodo;
+
+    while (actual->izquierda != NULL)
+        actual = actual->izquierda;
+
+    return actual;
+}
+
+//Elimina un nodo de un arbol de titulos.
+Nodo_titulos* eliminar_titulo(Nodo_titulos* nodo, int clave) {
+    if (nodo == NULL)
+        return nodo; // El nodo no existe, se devuelve el nodo original.
+
+    if (clave < nodo->titulo.id)
+        nodo->izquierda = eliminar_titulo(nodo->izquierda, clave);
+    else if (clave > nodo->titulo.id)
+        nodo->derecha = eliminar_titulo(nodo->derecha, clave);
+    else {
+        // El nodo actual es el nodo a eliminar.
+        if (nodo->izquierda == NULL || nodo->derecha == NULL) {
+            // El nodo tiene al menos un hijo nulo o ambos son nulos.
+            Nodo_titulos* hijo_nulo = nodo->izquierda ? nodo->izquierda : nodo->derecha;
+
+            if (hijo_nulo == NULL) {
+                // No hay hijos, el nodo se puede eliminar directamente.
+                free(nodo);
+                nodo = NULL;
+            } else {
+                // El nodo tiene un hijo, se reemplaza por ese hijo.
+                *nodo = *hijo_nulo;
+                free(hijo_nulo);
+            }
+        } else {
+            // El nodo tiene dos hijos, se encuentra el sucesor inmediato y se intercambia.
+            Nodo_titulos* sucesor = obtener_sucesor(nodo->derecha);
+            nodo->titulo = sucesor->titulo;
+            nodo->derecha = eliminar_titulo(nodo->derecha, sucesor->titulo.id);
+        }
+    }
+
+    if (nodo == NULL)
+        return nodo;
+
+    nodo->altura = 1 + max(altura(nodo->izquierda), altura(nodo->derecha));
+
+    int balanceo = balance(nodo);
+
+    if (balanceo > 1 && balance(nodo->izquierda) >= 0)
+        return rotacionDerecha(nodo);
+
+    if (balanceo > 1 && balance(nodo->izquierda) < 0) {
+        nodo->izquierda = rotacionIzquierda(nodo->izquierda);
+        return rotacionDerecha(nodo);
+    }
+
+    if (balanceo < -1 && balance(nodo->derecha) <= 0)
+        return rotacionIzquierda(nodo);
+
+    if (balanceo < -1 && balance(nodo->derecha) > 0) {
+        nodo->derecha = rotacionDerecha(nodo->derecha);
+        return rotacionIzquierda(nodo);
+    }
+
+    return nodo;
+}
 /******************************************/
 
 //Busca un titulo en un arbol de titulos y retorna.
@@ -230,6 +297,34 @@ void mostrarTitulos(Nodo_titulos *nodo) {
         mostrarTitulos(nodo->derecha);
     }
 }
+
+//Crea un método que elimina un título de un docente según su id.
+void eliminarTitulo(Universidad *Universidad) {
+    int idDocente, idTitulo;
+    Nodo_docente *nodoDocente = Universidad->listaDocentes;
+    Nodo_titulos *nodoTitulos;
+    printf("Ingrese el id del docente:\n");
+    scanf("%d", &idDocente);
+    fflush(stdin);
+    while (nodoDocente != NULL) {
+        if (nodoDocente->docente.id == idDocente) {
+            printf("Ingrese el id del titulo a eliminar:\n");
+            scanf("%d", &idTitulo);
+            fflush(stdin);
+            nodoTitulos = buscarTitulo(nodoDocente->docente.arbolTitulos, idTitulo);
+            if (nodoTitulos != NULL) {
+                nodoDocente->docente.arbolTitulos = eliminar_titulo(nodoDocente->docente.arbolTitulos, idTitulo);
+                printf("Titulo eliminado con exito.\n");
+                return;
+            }
+            printf("El titulo no existe.\n");
+            return;
+        }
+        nodoDocente = nodoDocente->siguiente;
+    }
+    printf("El docente no existe.\n");
+}
+
 
 //Imprime la informacion de un docente.
 void imprimirDocente(Docente docente){
@@ -550,6 +645,7 @@ int main(){
             case 5:
                 break;
             case 6:
+                eliminarTitulo(universidad);
                 break;
             case 7:
                 break;

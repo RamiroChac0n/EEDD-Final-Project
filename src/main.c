@@ -222,13 +222,15 @@ Nodo_titulos* buscarTitulo(Nodo_titulos *nodo, int idTitulo){
 }
 
 //Crea un método para crear un titulo universitario y agregarlo al arbol de titulos de un docente de una universidad.
-void agregarTitulo(Universidad *Universidad){
-    int idDocente, idTitulo;
+void agregarTitulo(Universidad *Universidad, int idDocente){
+    int idTitulo;
     Nodo_docente *nodoDocente = Universidad->listaDocentes;
     Nodo_titulos *nodoTitulos;
-    printf("Ingrese el id del docente:\n");
-    scanf("%d", &idDocente);
-    fflush(stdin);
+    if(idDocente == -1){
+        printf("Ingrese el id del docente:\n");
+        scanf("%d", &idDocente);
+        fflush(stdin);
+    }
     while(nodoDocente != NULL){
         if(nodoDocente->docente.id == idDocente){
             printf("Ingrese el id del titulo:\n");
@@ -262,7 +264,7 @@ void agregarTitulo(Universidad *Universidad){
             nodoTitulos = insertar_titulo(nodoDocente->docente.arbolTitulos, idTitulo, nodoTitulos->titulo.nombre, nodoTitulos->titulo.universidad, nodoTitulos->titulo.anioObtencion);
             nodoDocente->docente.arbolTitulos = nodoTitulos;
             printf("Titulo agregado correctamente.\n");
-            return;
+            return;            
 
         }
         nodoDocente = nodoDocente->siguiente;
@@ -424,6 +426,13 @@ void agregarDocente(Universidad *universidad){
     nodoNuevo->siguiente = NULL;
     if(nodoActual == NULL){
         universidad->listaDocentes = nodoNuevo;
+        char opcion;
+        do{
+            agregarTitulo(universidad, nodoNuevo->docente.id);
+            printf("Desea agregar otro titulo? (s/n)\n");
+            scanf(" %c", &opcion);
+            fflush(stdin);
+        }while(opcion == 's');
         return;
     }
     while(nodoActual != NULL){
@@ -431,10 +440,24 @@ void agregarDocente(Universidad *universidad){
             if(nodoAnterior == NULL){
                 nodoNuevo->siguiente = nodoActual;
                 universidad->listaDocentes = nodoNuevo;
+                char opcion;
+                do{
+                    agregarTitulo(universidad, nodoNuevo->docente.id);
+                    printf("Desea agregar otro titulo? (s/n)\n");
+                    scanf(" %c", &opcion);
+                    fflush(stdin);
+                }while(opcion == 's');
                 return;
             }else{
                 nodoNuevo->siguiente = nodoActual;
                 nodoAnterior->siguiente = nodoNuevo;
+                char opcion;
+                do{
+                    agregarTitulo(universidad, nodoNuevo->docente.id);
+                    printf("Desea agregar otro titulo? (s/n)\n");
+                    scanf(" %c", &opcion);
+                    fflush(stdin);
+                }while(opcion == 's');                
                 return;
             }
         }
@@ -640,7 +663,7 @@ int main(){
                 eliminarDocente(universidad);
                 break;
             case 4:
-                agregarTitulo(universidad);
+                agregarTitulo(universidad, -1);
                 break;
             case 5:
                 break;

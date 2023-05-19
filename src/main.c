@@ -292,11 +292,31 @@ void mostrarArbolTitulosID(Nodo_titulos *nodo){
 }
 
 //Muestra los titulos de un docente.
-void mostrarTitulos(Nodo_titulos *nodo) {
+void mostrarTitulos(Nodo_titulos *nodo, int idTitulo) {
     if (nodo != NULL) {
-        mostrarTitulos(nodo->izquierda);
-        mostrarTitulo(nodo->titulo);
-        mostrarTitulos(nodo->derecha);
+        if (idTitulo == -1)
+        {
+            mostrarTitulos(nodo->izquierda, -1);
+            mostrarTitulo(nodo->titulo);
+            mostrarTitulos(nodo->derecha, -1);
+        }else
+        {
+            while(nodo != NULL && nodo->titulo.id != idTitulo){
+                if(idTitulo < nodo->titulo.id){
+                    nodo = nodo->izquierda;
+                }else{
+                    nodo = nodo->derecha;
+                }
+            }
+            if (nodo != NULL)
+            {
+                mostrarTitulo(nodo->titulo);
+            }
+            else
+            {
+                printf("No se encontro el titulo.\n");
+            }
+        }         
     }
 }
 
@@ -329,7 +349,7 @@ void eliminarTitulo(Universidad *Universidad) {
 
 
 //Imprime la informacion de un docente.
-void imprimirDocente(Docente docente){
+void imprimirDocente(Docente docente, int idTitulo){
     printf("\n\n------------- Información -------------------\n\n");
     printf("Id: %d\n", docente.id);
     printf("Nombre: %s ", docente.nombre);
@@ -339,12 +359,23 @@ void imprimirDocente(Docente docente){
     printf("Ciudad: %s\n", docente.ciudad);
     printf("\n--------------- Titulos ---------------------\n");
     //Recorre el arbol de titulos y muestra la informacion de cada titulo.
-    mostrarTitulos(docente.arbolTitulos);
+    if (idTitulo == -1)
+    {
+        mostrarTitulos(docente.arbolTitulos, -1);
+    }else
+    {   
+        printf("Ingrese el id del titulo:\n");
+        scanf("%d", &idTitulo);
+        fflush(stdin);        
+        mostrarTitulos(docente.arbolTitulos, idTitulo);
+    }
+    
+    
     printf("---------------------------------------------\n");
 }
 
 //Crea un método para buscar un docente segun id en una universidad y retornar el docente.
-Docente buscarDocente(Universidad *universidad){
+Docente buscarDocente(Universidad *universidad, int idTitulo){
     Nodo_docente *nodoActual = universidad->listaDocentes;
     int opcion;
     printf("\nIngrese la opcion de busqueda:\n");
@@ -362,7 +393,7 @@ Docente buscarDocente(Universidad *universidad){
         fflush(stdin);
         while(nodoActual != NULL){
             if(nodoActual->docente.id == id){
-                imprimirDocente(nodoActual->docente);            
+                imprimirDocente(nodoActual->docente, idTitulo);            
             }
             nodoActual = nodoActual->siguiente;
         }
@@ -375,7 +406,7 @@ Docente buscarDocente(Universidad *universidad){
         fflush(stdin);
         while(nodoActual != NULL){
             if(strcmp(nodoActual->docente.nombre, nombre) == 0){
-                imprimirDocente(nodoActual->docente);           
+                imprimirDocente(nodoActual->docente, idTitulo);           
             }
             nodoActual = nodoActual->siguiente;
         }
@@ -657,7 +688,7 @@ int main(){
                 agregarDocente(universidad);
                 break;
             case 2:
-                buscarDocente(universidad);
+                buscarDocente(universidad, -1);
                 break;
             case 3:
                 eliminarDocente(universidad);
@@ -666,6 +697,7 @@ int main(){
                 agregarTitulo(universidad, -1);
                 break;
             case 5:
+                buscarDocente(universidad, 0);
                 break;
             case 6:
                 eliminarTitulo(universidad);

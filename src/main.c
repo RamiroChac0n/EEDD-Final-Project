@@ -374,6 +374,16 @@ void imprimirDocente(Docente docente, int idTitulo){
     printf("---------------------------------------------\n");
 }
 
+//Crea un método que imprime todos los docentes de una universidad y sus titulos.
+void imprimirDocentes(Universidad *universidad){
+    Nodo_docente *nodoActual = universidad->listaDocentes;
+    while(nodoActual != NULL){
+        printf("\n****************************************************************************************\n");
+        imprimirDocente(nodoActual->docente, -1);
+        nodoActual = nodoActual->siguiente;
+    }
+}
+
 //Crea un método para buscar un docente segun id en una universidad y retornar el docente.
 Docente buscarDocente(Universidad *universidad, int idTitulo){
     Nodo_docente *nodoActual = universidad->listaDocentes;
@@ -690,6 +700,7 @@ int main(){
                 eliminarTitulo(universidad);
                 break;
             case 7:
+                imprimirDocentes(universidad);
                 break;
             case 8:
                 break;

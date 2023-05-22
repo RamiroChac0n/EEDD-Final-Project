@@ -673,6 +673,79 @@ void docentesQuemados(Universidad *universidad){
 }
 /* ******* TEST ******* */
 
+/* ******* Impresión del árbol ******* */
+struct Trunk
+{
+    struct Trunk *prev;
+    char *str;
+};
+
+// Función auxiliar para imprimir los troncos de las ramas del árbol
+void showTrunks(struct Trunk *p)
+{
+    if (p == NULL)
+        return;
+
+    showTrunks(p->prev);
+    printf("%s", p->str);
+}
+
+// Función para imprimir el árbol binario de forma visual
+void printTree(Nodo_titulos *root, struct Trunk *prev, int isLeft)
+{
+    if (root == NULL)
+        return;
+
+    char *prev_str = "    ";
+    struct Trunk *trunk = (struct Trunk *)malloc(sizeof(struct Trunk));
+    trunk->prev = prev;
+    trunk->str = (char *)malloc(strlen(prev_str) + 1);
+    strcpy(trunk->str, prev_str);
+
+    printTree(root->derecha, trunk, 1);
+
+    if (prev == NULL)
+        trunk->str = "———";
+    else if (isLeft)
+    {
+        trunk->str = ".———";
+        prev_str = "   |";
+    }
+    else
+    {
+        trunk->str = "`———";
+        prev->str = prev_str;
+    }
+
+    showTrunks(trunk);
+    printf(" %d\n", root->titulo.id);
+
+    if (prev != NULL)
+        prev->str = prev_str;
+    trunk->str = "   |";
+
+    printTree(root->izquierda, trunk, 0);
+}
+//Crea un método que permite imprimir el árbol de títulos según el id de un docente.
+void imprimirArbolTitulos(Universidad *universidad){
+    int idDocente;
+    printf("Ingrese el id del docente:\n");
+    scanf("%d", &idDocente);
+    fflush(stdin);
+    Nodo_docente *nodoDocente = universidad->listaDocentes;
+    while(nodoDocente != NULL){
+        if(nodoDocente->docente.id == idDocente){
+            printf("\n\n------------- Arbol de títulos -------------------\n");
+            printTree(nodoDocente->docente.arbolTitulos, NULL, 0);
+            printf("--------------------------------------------------\n\n");
+            return;
+        }
+        nodoDocente = nodoDocente->siguiente;
+    }
+    printf("El docente no existe.\n");
+}
+/* *********************************** */
+
 int main(){
     //Haz un menú para agregar, eliminar, mostrar y ordenar docentes.
     Universidad *universidad = (Universidad*)malloc(sizeof(Universidad));
@@ -690,7 +763,7 @@ int main(){
         printf("5. Buscar título.\n");
         printf("6. Eliminar título.\n");
         printf("7. Imprimir lista de Docentes.\n");
-        printf("8. Imprimir arbol de títulos de un medico.\n");
+        printf("8. Imprimir arbol de títulos de un docente.\n");
         printf("9. Imprimir los datos completos de cada titulo de un docente.\n");
         printf("10. SALIR.\n");
         printf("Ingrese una opcion:\n");
@@ -721,6 +794,7 @@ int main(){
                 imprimirDocentes(universidad);
                 break;
             case 8:
+                imprimirArbolTitulos(universidad);
                 break;
             case 9:
                 imprimirTitulosDocente(universidad);

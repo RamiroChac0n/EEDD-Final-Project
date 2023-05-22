@@ -54,3 +54,4 @@ dkms.conf
 # Devcontainer
 .devcontainer
 
+a.out

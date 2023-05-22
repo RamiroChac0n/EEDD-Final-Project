@@ -455,47 +455,34 @@ void agregarDocente(Universidad *universidad){
     fgets(nodoNuevo->docente.ciudad, 50, stdin);
     nodoNuevo->docente.ciudad[strcspn(nodoNuevo->docente.ciudad, "\n")] = '\0';
     nodoNuevo->siguiente = NULL;
-    if(nodoActual == NULL){
+
+    if (nodoActual == NULL) {
         universidad->listaDocentes = nodoNuevo;
-        char opcion;
-        do{
-            agregarTitulo(universidad, nodoNuevo->docente.id);
-            printf("Desea agregar otro titulo? (s/n)\n");
-            scanf(" %c", &opcion);
-            fflush(stdin);
-        }while(opcion == 's');
-        return;
-    }
-    while(nodoActual != NULL){
-        if(nodoActual->docente.id > nodoNuevo->docente.id){
-            if(nodoAnterior == NULL){
-                nodoNuevo->siguiente = nodoActual;
-                universidad->listaDocentes = nodoNuevo;
-                char opcion;
-                do{
-                    agregarTitulo(universidad, nodoNuevo->docente.id);
-                    printf("Desea agregar otro titulo? (s/n)\n");
-                    scanf(" %c", &opcion);
-                    fflush(stdin);
-                }while(opcion == 's');
-                return;
-            }else{
-                nodoNuevo->siguiente = nodoActual;
-                nodoAnterior->siguiente = nodoNuevo;
-                char opcion;
-                do{
-                    agregarTitulo(universidad, nodoNuevo->docente.id);
-                    printf("Desea agregar otro titulo? (s/n)\n");
-                    scanf(" %c", &opcion);
-                    fflush(stdin);
-                }while(opcion == 's');                
-                return;
+    } else {
+        while (nodoActual != NULL) {
+            if (nodoActual->docente.id > nodoNuevo->docente.id) {
+                break;
             }
+            nodoAnterior = nodoActual;
+            nodoActual = nodoActual->siguiente;
         }
-        nodoAnterior = nodoActual;
-        nodoActual = nodoActual->siguiente;
+
+        if (nodoAnterior == NULL) {
+            nodoNuevo->siguiente = nodoActual;
+            universidad->listaDocentes = nodoNuevo;
+        } else {
+            nodoNuevo->siguiente = nodoActual;
+            nodoAnterior->siguiente = nodoNuevo;
+        }
     }
-    nodoAnterior->siguiente = nodoNuevo;
+
+    char opcion;
+    do {
+        agregarTitulo(universidad, nodoNuevo->docente.id);
+        printf("Desea agregar otro título? (s/n)\n");
+        scanf(" %c", &opcion);
+        fflush(stdin);
+    } while (opcion == 's');
 }
 
 //Crea un método para eliminar un docente de una universidad segun un id.

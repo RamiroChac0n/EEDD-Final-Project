@@ -347,6 +347,24 @@ void eliminarTitulo(Universidad *Universidad) {
     printf("El docente no existe.\n");
 }
 
+//Crea un método que imprime los titulos de un docente en inorden según el id del docente.
+void imprimirTitulosDocente(Universidad *universidad){
+    int idDocente;
+    printf("Ingrese el id del docente:\n");
+    scanf("%d", &idDocente);
+    fflush(stdin);
+    Nodo_docente *nodoDocente = universidad->listaDocentes;
+    while(nodoDocente != NULL){
+        if(nodoDocente->docente.id == idDocente){
+            printf("\n\n------------- Títulos INORDEN -------------------\n");
+            mostrarTitulos(nodoDocente->docente.arbolTitulos, -1);
+            printf("--------------------------------------------------\n\n");
+            return;
+        }
+        nodoDocente = nodoDocente->siguiente;
+    }
+    printf("El docente no existe.\n");
+}
 
 //Imprime la informacion de un docente.
 void imprimirDocente(Docente docente, int idTitulo){
@@ -705,6 +723,7 @@ int main(){
             case 8:
                 break;
             case 9:
+                imprimirTitulosDocente(universidad);
                 break;
             case 10:
                 printf("Adios.\n");
